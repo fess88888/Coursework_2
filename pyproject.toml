@@ -6,6 +6,7 @@ authors = [
     {name = "Виталий Якимов",email = "fess.888@mail.ru"}
 ]
 readme = "README.md"
+packages = [{include = "src"}]
 requires-python = ">=3.12"
 dependencies = [
     "requests (>=2.34.2,<3.0.0)"
@@ -29,7 +30,10 @@ dev = [
     "pytest (>=9.0.2,<10.0.0)",
     "pytest-cov (>=7.0.0,<8.0.0)"
 ]
-
+[tool.pytest.ini_options]
+markers = [
+    "integration: mark a test as an integration test",
+]
 [tool.mypy]
 disallow_untyped_defs = true
 no_implicit_optional = true

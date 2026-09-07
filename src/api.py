@@ -14,10 +14,11 @@ class BaseAPI(abc.ABC):
 
 
 class RequestsAPI(BaseAPI):
-    """Реализация API через requests"""
+    """Реализация API через requests с обязательным User-Agent для Nominatim"""
 
-    def __init__(self, timeout: int = 10):
+    def __init__(self, timeout: int = 10, user_agent: str = "Coursework_2/1.0"):
         self.timeout = timeout
+        self.user_agent = user_agent
 
     def _handle_response(self, response: requests.Response) -> Dict[str, Any]:
         response.raise_for_status()
@@ -27,11 +28,13 @@ class RequestsAPI(BaseAPI):
             return {"raw": response.text}
 
     def get(self, url: str, params: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
-        resp = requests.get(url, params=params, timeout=self.timeout)
+        headers = {"User-Agent": self.user_agent}
+        resp = requests.get(url, params=params, headers=headers, timeout=self.timeout)
         return self._handle_response(resp)
 
     def post(self, url: str, data: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
-        resp = requests.post(url, json=data, timeout=self.timeout)
+        headers = {"User-Agent": self.user_agent}
+        resp = requests.post(url, json=data, headers=headers, timeout=self.timeout)
         return self._handle_response(resp)
 
 
@@ -101,5 +104,6 @@ class OpenSkyAPI:
                 "latitude": s[6],
                 "baro_altitude": s[7],
                 "on_ground": s[8],
+                "velocity": s[9],
             })
         return result
